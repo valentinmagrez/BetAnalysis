@@ -25,26 +25,34 @@ namespace UnibetService.UnibetApi
 
             var fullUri = $"{uriSuffix}?{queryParams}";
             await Post(fullUri);
+            await CheckSession();
         }
 
-        public async Task CheckSession()
+        public async Task<string> GetBetHistory()
+        {
+            const string uriSuffix = "/zones/myaccount/betting-history-result.json";
+            const string exampleParameter =
+                "datepickerFrom=13/02/2020&pageNumber=1&datepickerTo=16/02/2020&statusFilter=all&resultPerPage=10";
+
+            var fullUri = $"{uriSuffix}?{exampleParameter}";
+            return await PostJsonResult(fullUri);
+        }
+
+        private async Task CheckSession()
         {
             const string uriSuffix = "/zones/checksession.json";
-            _cookieContainer.Add(_baseUri, new Cookie("CookieName", "cookie_value"));
             await Post(uriSuffix);
+        }
+
+        private async Task<string> PostJsonResult(string uri)
+        {
+            var response = await _client.PostAsync(uri, null);
+            return await response.Content.ReadAsStringAsync();
         }
 
         private async Task Post(string uri)
         {
             await _client.PostAsync(uri, null);
-        }
-
-        private void DisplayCookie()
-        {
-            foreach (Cookie cookie in _cookieContainer.GetCookies(_baseUri))
-            {
-                Console.WriteLine(cookie.Name +": "+cookie.Value);
-            }
         }
     }
 }
