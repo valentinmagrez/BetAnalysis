@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnibetService", "UnibetService\UnibetService.csproj", "{251C1B47-AA6E-4001-B12D-280C9D400F3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnibetService.Tests", "UnibetService.Tests\UnibetService.Tests.csproj", "{EC8C1A97-7AD8-4B6E-B9D8-9B47C84A0966}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnibetService.Tests", "UnibetService.Tests\UnibetService.Tests.csproj", "{EC8C1A97-7AD8-4B6E-B9D8-9B47C84A0966}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetsDashboard", "BetsDashboard\BetsDashboard.csproj", "{8FBD47D2-77FC-464C-98EB-531E87FC413B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{EC8C1A97-7AD8-4B6E-B9D8-9B47C84A0966}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC8C1A97-7AD8-4B6E-B9D8-9B47C84A0966}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC8C1A97-7AD8-4B6E-B9D8-9B47C84A0966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FBD47D2-77FC-464C-98EB-531E87FC413B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FBD47D2-77FC-464C-98EB-531E87FC413B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FBD47D2-77FC-464C-98EB-531E87FC413B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FBD47D2-77FC-464C-98EB-531E87FC413B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
