@@ -7,5 +7,11 @@ namespace UnibetService.UnibetApi.DTO
     {
         [JsonProperty("bettingHistoryItems")]
         public List<BetDto> Bets { get; set; }
+
+        [JsonProperty("phHasNext")]
+        public bool HasNextPage { get; set; }
+
+        [JsonProperty("phCurrentPagePage")]
+        public int CurrentPage { get; set; }
     }
 }

@@ -1,9 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
+using UnibetService.Utils.Converters;
 
 namespace UnibetService.UnibetApi.DTO
 {
     public class BetDetailsDto
     {
+        [JsonProperty("eventDate")]
+        [JsonConverter(typeof(MicrosecondEpochConverter))]
+        public DateTime EventDate { get; set; }
+
         [JsonProperty("eventName")]
         public string EventName { get; set; }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,13 +10,11 @@ namespace UnibetService.UnibetApi
     public class UnibetClient
     {
         private readonly HttpClient _client;
-        private readonly CookieContainer _cookieContainer;
         private readonly Uri _baseUri = new Uri("https://www.unibet.fr");
 
         public UnibetClient()
         {
-            _cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler {CookieContainer = _cookieContainer};
+            var handler = new HttpClientHandler {CookieContainer = new CookieContainer() };
             _client = new HttpClient(handler) {BaseAddress = _baseUri};
         }
         
@@ -28,20 +28,27 @@ namespace UnibetService.UnibetApi
             await CheckSession();
         }
 
-        public async Task<string> GetBetHistory()
-        {
-            const string uriSuffix = "/zones/myaccount/betting-history-result.json";
-            const string exampleParameter =
-                "datepickerFrom=13/02/2020&pageNumber=1&datepickerTo=16/02/2020&statusFilter=all&resultPerPage=10";
-
-            var fullUri = $"{uriSuffix}?{exampleParameter}";
-            return await PostJsonResult(fullUri);
-        }
-
         private async Task CheckSession()
         {
             const string uriSuffix = "/zones/checksession.json";
             await Post(uriSuffix);
+        }
+
+        public async Task<string> GetBetHistory(DateTime from, DateTime to)
+        {
+            const string uriSuffix = "/zones/myaccount/betting-history-result.json";
+            var parameters = new Dictionary<string, string>
+            {
+                {"datepickerFrom", from.ToString("dd/MM/yyyy")},
+                {"datepickerTo", to.ToString("dd/MM/yyyy")},
+                {"pageNumber", "1"},
+                {"resultPerPage", "10"},
+                {"statusFilter", "all"}
+            };
+            var exampleParameter = string.Join("&",parameters.Select(_ => $"{_.Key}={_.Value}"));
+
+            var fullUri = $"{uriSuffix}?{exampleParameter}";
+            return await PostJsonResult(fullUri);
         }
 
         private async Task<string> PostJsonResult(string uri)
