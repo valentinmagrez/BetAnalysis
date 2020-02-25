@@ -38,26 +38,31 @@ namespace UnibetService.UnibetApi
         public async Task<List<BetDto>> GetBetHistory(DateTime from, DateTime to)
         {
             const string uriSuffix = "/zones/myaccount/betting-history-result.json";
-            var pageNumber = 1;
             var bets = new List<BetDto>();
-            var hasNextPage = true;
-            while (hasNextPage)
+            var dateFrom = from;
+            for (var dateTo = from.AddMonths(1); dateTo <= to; dateFrom = dateTo.AddDays(1), dateTo = dateTo.AddMonths(1))
             {
-                var parameters = new Dictionary<string, string>
+                var pageNumber = 1;
+                var hasNextPage = true;
+                while (hasNextPage)
                 {
-                    {"datepickerFrom", from.ToString("dd/MM/yyyy")},
-                    {"datepickerTo", to.ToString("dd/MM/yyyy")},
-                    {"pageNumber", pageNumber.ToString()},
-                    {"resultPerPage", "99"},
-                    {"statusFilter", "all"}
-                };
-                var exampleParameter = string.Join("&", parameters.Select(_ => $"{_.Key}={_.Value}"));
+                    var parameters = new Dictionary<string, string>
+                    {
+                        {"datepickerFrom", dateFrom.ToString("dd/MM/yyyy")},
+                        {"datepickerTo", dateTo.ToString("dd/MM/yyyy")},
+                        {"pageNumber", pageNumber.ToString()},
+                        {"resultPerPage", "99"},
+                        {"statusFilter", "all"}
+                    };
+                    var exampleParameter = string.Join("&", parameters.Select(_ => $"{_.Key}={_.Value}"));
 
-                var fullUri = $"{uriSuffix}?{exampleParameter}";
-                var result = await PostJsonResult<BetsHistoryDto>(fullUri);
-                bets.AddRange(result.Bets);
-                hasNextPage = result.HasNextPage;
-                pageNumber = result.CurrentPage + 1;
+                    var fullUri = $"{uriSuffix}?{exampleParameter}";
+                    var result = await PostJsonResult<BetsHistoryDto>(fullUri);
+                    if(result.Bets != null)
+                        bets.AddRange(result.Bets);
+                    hasNextPage = result.HasNextPage;
+                    pageNumber = result.CurrentPage + 1;
+                }
             }
 
             return bets;
@@ -65,6 +70,7 @@ namespace UnibetService.UnibetApi
 
         private async Task<TDto> PostJsonResult<TDto>(string uri)
         {
+            Console.WriteLine($"Send post request to: {uri}");
             var response = await _client.PostAsync(uri, null);
             return await response.Content.ReadAsAsync<TDto>();
         }
