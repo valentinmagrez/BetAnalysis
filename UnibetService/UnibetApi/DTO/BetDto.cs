@@ -21,6 +21,9 @@ namespace UnibetService.UnibetApi.DTO
         public decimal Stake { get; set; }
 
         [JsonProperty("totalOdd")]
-        public double Odd { get; set; } 
+        public double? Odd { get; set; }
+
+        [JsonProperty("totalReturn")]
+        public decimal? TotalReturn { get; set; }
     }
 }

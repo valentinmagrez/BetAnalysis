@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using UnibetService.UnibetApi.DTO;
 
 namespace UnibetService.UnibetApi
 {
@@ -34,27 +35,38 @@ namespace UnibetService.UnibetApi
             await Post(uriSuffix);
         }
 
-        public async Task<string> GetBetHistory(DateTime from, DateTime to)
+        public async Task<List<BetDto>> GetBetHistory(DateTime from, DateTime to)
         {
             const string uriSuffix = "/zones/myaccount/betting-history-result.json";
-            var parameters = new Dictionary<string, string>
+            var pageNumber = 1;
+            var bets = new List<BetDto>();
+            var hasNextPage = true;
+            while (hasNextPage)
             {
-                {"datepickerFrom", from.ToString("dd/MM/yyyy")},
-                {"datepickerTo", to.ToString("dd/MM/yyyy")},
-                {"pageNumber", "1"},
-                {"resultPerPage", "10"},
-                {"statusFilter", "all"}
-            };
-            var exampleParameter = string.Join("&",parameters.Select(_ => $"{_.Key}={_.Value}"));
+                var parameters = new Dictionary<string, string>
+                {
+                    {"datepickerFrom", from.ToString("dd/MM/yyyy")},
+                    {"datepickerTo", to.ToString("dd/MM/yyyy")},
+                    {"pageNumber", pageNumber.ToString()},
+                    {"resultPerPage", "99"},
+                    {"statusFilter", "all"}
+                };
+                var exampleParameter = string.Join("&", parameters.Select(_ => $"{_.Key}={_.Value}"));
 
-            var fullUri = $"{uriSuffix}?{exampleParameter}";
-            return await PostJsonResult(fullUri);
+                var fullUri = $"{uriSuffix}?{exampleParameter}";
+                var result = await PostJsonResult<BetsHistoryDto>(fullUri);
+                bets.AddRange(result.Bets);
+                hasNextPage = result.HasNextPage;
+                pageNumber = result.CurrentPage + 1;
+            }
+
+            return bets;
         }
 
-        private async Task<string> PostJsonResult(string uri)
+        private async Task<TDto> PostJsonResult<TDto>(string uri)
         {
             var response = await _client.PostAsync(uri, null);
-            return await response.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsAsync<TDto>();
         }
 
         private async Task Post(string uri)

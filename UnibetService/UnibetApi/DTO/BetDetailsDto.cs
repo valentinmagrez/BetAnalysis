@@ -21,5 +21,8 @@ namespace UnibetService.UnibetApi.DTO
 
         [JsonProperty("sportType")]
         public string Sport { get; set; }
+
+        [JsonProperty("isWinning")]
+        public string IsWinning { get; set; }
     }
 }
