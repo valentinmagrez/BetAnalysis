@@ -25,5 +25,13 @@ namespace UnibetService.UnibetApi.DTO
 
         [JsonProperty("totalReturn")]
         public decimal? TotalReturn { get; set; }
+
+        [JsonProperty("externalReference")]
+        public string BetNumber { get; set; }
+
+        [JsonProperty("isFreeBets")]
+        public bool IsFreeBet { get; set; }
+
+        public bool IsFirstBet => BetNumber.Split('/')[0] == "1";
     }
 }

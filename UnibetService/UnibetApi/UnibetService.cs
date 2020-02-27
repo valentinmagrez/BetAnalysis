@@ -19,14 +19,17 @@ namespace UnibetService.UnibetApi
             await _unibetClient.Login(username, password, birthDate);
         }
 
-        public async Task<List<BetDto>> GetBetsHistoryParallel(DateTime from, DateTime to)
+        public async Task<List<BetDto>> GetBetsHistory(DateTime from, DateTime to)
         {
             var tasks = new List<Task<List<BetDto>>>();
             var bets = new List<BetDto>();
             var currentDateFrom = from;
-            for (var currentDateTo = from.AddMonths(1); currentDateTo <= to; currentDateFrom = currentDateTo.AddDays(1), currentDateTo = currentDateTo.AddMonths(1))
+            var currentDateTo = new DateTime();
+            while (currentDateTo != to)
             {
+                currentDateTo = currentDateFrom.AddMonths(1) <= to ? currentDateFrom.AddMonths(1) : to;
                 tasks.Add(_unibetClient.GetBetsHistory(currentDateFrom, currentDateTo));
+                currentDateFrom = currentDateTo.AddDays(1);
             }
 
             await Task.WhenAll(tasks);
@@ -34,6 +37,22 @@ namespace UnibetService.UnibetApi
             foreach (var task in tasks)
             {
                 bets.AddRange(task.Result);
+            }
+
+            return bets;
+        }
+
+        public async Task<List<BetDto>> GetAllBets()
+        {
+            var dateTo = DateTime.Now;
+            var bets = new List<BetDto>();
+            var foundFirstBet = false;
+            while (!foundFirstBet)
+            {
+                var result = await GetBetsHistory(dateTo.AddMonths(-12).AddDays(1), dateTo);
+                foundFirstBet = result.Exists(_=>_.IsFirstBet);
+                bets.AddRange(result);
+                dateTo = dateTo.AddMonths(-12);
             }
 
             return bets;
