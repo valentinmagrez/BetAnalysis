@@ -1,0 +1,72 @@
+﻿@using BetsDashboard.Models
+
+@inject HttpClient HttpClient
+
+@page "/stats"
+
+<h1>Stats</h1>
+
+<DateRangePicker OnRangeSelect="OnRangeSelect"/>
+
+<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
+
+<p>Benef: @returnAmout</p>
+<BarChart @ref="barChart" TItem="double" />
+
+@code{
+
+    BarChart<double> barChart;
+
+    Dictionary<DateTime, decimal?> returnByDay = new Dictionary<DateTime, decimal?>();
+
+    decimal returnAmout = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await HandleRedraw();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        returnAmout = 0;
+        var bets = await HttpClient.GetJsonAsync<List<BetDto>>("weatherforecast");
+        var betsByDays = bets.GroupBy(_ => _.Date.Date);
+        foreach (var betByDay in betsByDays)
+        {
+            var amount = betByDay.Sum(_ => _.TotalReturn - _.Stake);
+            returnByDay[betByDay.Key] = amount;
+            returnAmout += amount.Value;
+        }
+
+        await HandleRedraw();
+    }
+
+    async Task HandleRedraw()
+    {
+        barChart.Clear();
+
+        barChart.AddLabel(returnByDay.Keys.Select(_=>_.ToString()).ToArray());
+
+        barChart.AddDataSet(GetLineChartDataset());
+
+        await barChart.Update();
+    }
+
+    BarChartDataset<double> GetLineChartDataset()
+    {
+        return new BarChartDataset<double>
+        {
+            Label = "# of randoms",
+            Data = returnByDay.Select(_=>(double)_.Value).ToList()
+
+        };
+    }
+
+    public void OnRangeSelect(DateRange range)
+    {
+        Console.WriteLine(range.Start);
+    }
+}
