@@ -5,7 +5,7 @@ using UnibetService.UnibetApi.DTO;
 
 namespace UnibetService.UnibetApi
 {
-    public class UnibetService
+    public class UnibetService : IUnibetService
     {
         private readonly UnibetClient _unibetClient;
 

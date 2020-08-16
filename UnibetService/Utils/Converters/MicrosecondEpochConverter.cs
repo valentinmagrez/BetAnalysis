@@ -6,8 +6,6 @@ namespace UnibetService.Utils.Converters
 {
     public class MicrosecondEpochConverter : DateTimeConverterBase
     {
-        private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var datetimeOffset = new DateTimeOffset((DateTime) value);
