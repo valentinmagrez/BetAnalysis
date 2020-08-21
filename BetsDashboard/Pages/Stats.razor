@@ -6,20 +6,21 @@
 
 <h1>Stats</h1>
 
-<DateRangePicker OnRangeSelect="OnRangeSelect"/>
+<DateRangePicker @bind-StartDate="StartDate" @bind-EndDate="EndDate" OnRangeSelect="OnRangeSelect" MaxDate="DateTimeOffset.Now.AddDays(1)"/>
 
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 
-<p>Benef: @returnAmout</p>
-<BarChart @ref="barChart" TItem="double" />
+<p>Benef: @ReturnAmount</p>
+<BarChart @ref="BarChart" TItem="double" />
 
 @code{
+    DateTimeOffset? StartDate { get; set; } = DateTime.Today.AddMonths(-1);
+    DateTimeOffset? EndDate { get; set; } = DateTime.Today;
 
-    BarChart<double> barChart;
-
+    BarChart<double> BarChart { get; set; }
     Dictionary<DateTime, decimal?> returnByDay = new Dictionary<DateTime, decimal?>();
 
-    decimal returnAmout = 0;
+    decimal ReturnAmount { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -31,42 +32,53 @@
 
     protected override async Task OnInitializedAsync()
     {
-        returnAmout = 0;
-        var bets = await HttpClient.GetJsonAsync<List<BetDto>>("weatherforecast");
+        await RefreshData();
+    }
+
+    public async void OnRangeSelect(DateRange range)
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        await GetBets();
+        await HandleRedraw();
+        this.StateHasChanged();
+    }
+
+    private async Task GetBets()
+    {
+        returnByDay.Clear();
+        var uri = $"weatherforecast?startDate={StartDate.Value.Date.ToString("yyyy-MM-dd")}&endDate={EndDate.Value.Date.ToString("yyyy-MM-dd")}";
+        ReturnAmount = 0;
+        var bets = await HttpClient.GetJsonAsync<List<BetDto>>(uri);
         var betsByDays = bets.GroupBy(_ => _.Date.Date);
         foreach (var betByDay in betsByDays)
         {
             var amount = betByDay.Sum(_ => _.TotalReturn - _.Stake);
             returnByDay[betByDay.Key] = amount;
-            returnAmout += amount.Value;
+            ReturnAmount += amount.Value;
         }
-
-        await HandleRedraw();
+        Console.WriteLine(ReturnAmount);
     }
 
     async Task HandleRedraw()
     {
-        barChart.Clear();
+        BarChart.Clear();
 
-        barChart.AddLabel(returnByDay.Keys.Select(_=>_.ToString()).ToArray());
+        BarChart.AddLabel(returnByDay.Keys.Select(_=>_.ToString()).ToArray());
 
-        barChart.AddDataSet(GetLineChartDataset());
+        BarChart.AddDataSet(GetLineChartDataset());
 
-        await barChart.Update();
+        await BarChart.Update();
     }
 
     BarChartDataset<double> GetLineChartDataset()
     {
         return new BarChartDataset<double>
         {
-            Label = "# of randoms",
             Data = returnByDay.Select(_=>(double)_.Value).ToList()
-
         };
-    }
-
-    public void OnRangeSelect(DateRange range)
-    {
-        Console.WriteLine(range.Start);
     }
 }
