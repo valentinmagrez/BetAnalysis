@@ -56,7 +56,7 @@
         var betsByDays = bets.GroupBy(_ => _.Date.Date);
         foreach (var betByDay in betsByDays)
         {
-            var amount = betByDay.Sum(_ => _.TotalReturn - _.Stake);
+            var amount = betByDay.Sum(_ => _.Benefits);
             returnByDay[betByDay.Key] = amount;
             ReturnAmount += amount.Value;
         }
