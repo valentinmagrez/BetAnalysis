@@ -1,5 +1,6 @@
 using System.Linq;
 using Bet.Domain.Bet;
+using Bet.Domain.BetAggregates;
 using NFluent;
 using NUnit.Framework;
 
@@ -52,10 +53,10 @@ namespace Bet.Domain.UnitTest
             Check.That(bets.State).IsEqualTo(expected);
         }
 
-        private static Bet.Bet BuildBetItems(BetState[] states)
+        private static BetAggregates.Bet BuildBetItems(BetState[] states)
         {
             var items = states.Select(_ => new BetItem {State = _});
-            var bets = new Bet.Bet {Items = items.ToList()};
+            var bets = new BetAggregates.Bet {Items = items.ToList()};
             return bets;
         }
     }

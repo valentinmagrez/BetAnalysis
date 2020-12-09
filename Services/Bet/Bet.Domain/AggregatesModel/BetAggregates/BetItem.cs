@@ -1,7 +1,8 @@
 ﻿using System;
+using Bet.Domain.Bet;
 using Bet.Domain.SeedWork;
 
-namespace Bet.Domain.Bet
+namespace Bet.Domain.BetAggregates
 {
     public class BetItem : Entity
     {
