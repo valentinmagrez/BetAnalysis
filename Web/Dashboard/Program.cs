@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Microsoft.AspNetCore.Blazor.Hosting;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dashboard
@@ -14,15 +13,15 @@ namespace Dashboard
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.RootComponents.Add<App>("#app");
+
             builder.Services
-                .AddBlazorise(options => { options.ChangeTextOnKeyPress = true; })
                 .AddBootstrapProviders()
                 .AddFontAwesomeIcons()
                 .AddScoped(_ => new HttpClient
                 {
-                    BaseAddress = new Uri("https://localhost:32774")
+                    BaseAddress = new Uri("https://localhost:49161")
                 });
-            builder.RootComponents.Add<App>("app");
             var host = builder.Build();
 
             host.Services

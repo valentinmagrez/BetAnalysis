@@ -7,15 +7,24 @@
 
 <DateRangePicker @bind-StartDate="StartDate" @bind-EndDate="EndDate" OnRangeSelect="OnRangeSelect" MaxDate="DateTimeOffset.Now.AddDays(1)" />
 
-<Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
+<div class="container">
+    @if (IsLoading)
+    {
+        <div id="overlay">
+            <div id="loader"></div>
+        </div>
+    }
+    <div class="result @(IsLoading ? "data-loading" : string.Empty)" >
+        <p>Benef: @ReturnAmount</p>
+        <BarChart @ref="BarChart" TItem="double"/>
+    </div>
+</div>
 
-<p>Benef: @ReturnAmount</p>
-<BarChart @ref="BarChart" TItem="double" />
 
 @code{
     DateTimeOffset? StartDate { get; set; } = DateTime.Today.AddMonths(-1);
     DateTimeOffset? EndDate { get; set; } = DateTime.Today;
-
+    public bool IsLoading { get; set; }
     public BarChart<double> BarChart;
     Dictionary<DateTime, decimal?> returnByDay = new Dictionary<DateTime, decimal?>();
 
@@ -41,9 +50,11 @@
 
     private async Task RefreshData()
     {
+        IsLoading = true;
         await GetBets();
+        IsLoading = false;
         await HandleRedraw();
-        this.StateHasChanged();
+        StateHasChanged();
     }
 
     private async Task GetBets()
@@ -51,7 +62,7 @@
         returnByDay.Clear();
         var uri = $"bet?startDate={StartDate.Value.Date.ToString("yyyy-MM-dd")}&endDate={EndDate.Value.Date.ToString("yyyy-MM-dd")}";
         ReturnAmount = 0;
-        var bets = await HttpClient.GetJsonAsync<List<BetDto>>(uri);
+        var bets = await HttpClient.GetFromJsonAsync<List<BetDto>>(uri);
         var betsByDays = bets.GroupBy(_ => _.Date.Date).OrderBy(_ => _.Key);
         foreach (var betByDay in betsByDays)
         {
@@ -65,11 +76,8 @@
     async Task HandleRedraw()
     {
         await BarChart.Clear();
-
         await BarChart.AddLabels(returnByDay.Keys.Select(_ => _.ToString()).ToArray());
-
         await BarChart.AddDataSet(GetLineChartDataset());
-
         await BarChart.Update();
     }
 
