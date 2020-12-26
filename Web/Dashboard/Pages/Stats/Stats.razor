@@ -5,7 +5,7 @@
 
 <h1>Stats</h1>
 
-<DateRangePicker @bind-StartDate="StartDate" @bind-EndDate="EndDate" OnRangeSelect="OnRangeSelect" MaxDate="DateTimeOffset.Now.AddDays(1)"/>
+<DateRangePicker @bind-StartDate="StartDate" @bind-EndDate="EndDate" OnRangeSelect="OnRangeSelect" MaxDate="DateTimeOffset.Now.AddDays(1)" />
 
 <Button Clicked="@(async () => await HandleRedraw())">Redraw</Button>
 
@@ -16,7 +16,7 @@
     DateTimeOffset? StartDate { get; set; } = DateTime.Today.AddMonths(-1);
     DateTimeOffset? EndDate { get; set; } = DateTime.Today;
 
-    BarChart<double> BarChart { get; set; }
+    public BarChart<double> BarChart;
     Dictionary<DateTime, decimal?> returnByDay = new Dictionary<DateTime, decimal?>();
 
     decimal ReturnAmount { get; set; } = 0;
@@ -52,7 +52,7 @@
         var uri = $"bet?startDate={StartDate.Value.Date.ToString("yyyy-MM-dd")}&endDate={EndDate.Value.Date.ToString("yyyy-MM-dd")}";
         ReturnAmount = 0;
         var bets = await HttpClient.GetJsonAsync<List<BetDto>>(uri);
-        var betsByDays = bets.GroupBy(_ => _.Date.Date);
+        var betsByDays = bets.GroupBy(_ => _.Date.Date).OrderBy(_ => _.Key);
         foreach (var betByDay in betsByDays)
         {
             var amount = betByDay.Sum(_ => _.Benefits);
@@ -64,11 +64,11 @@
 
     async Task HandleRedraw()
     {
-        BarChart.Clear();
+        await BarChart.Clear();
 
-        BarChart.AddLabel(returnByDay.Keys.Select(_=>_.ToString()).ToArray());
+        await BarChart.AddLabels(returnByDay.Keys.Select(_ => _.ToString()).ToArray());
 
-        BarChart.AddDataSet(GetLineChartDataset());
+        await BarChart.AddDataSet(GetLineChartDataset());
 
         await BarChart.Update();
     }
@@ -77,7 +77,7 @@
     {
         return new BarChartDataset<double>
         {
-            Data = returnByDay.Select(_=>(double)_.Value).ToList()
+            Data = returnByDay.Select(_ => (double)_.Value).ToList()
         };
     }
 }
