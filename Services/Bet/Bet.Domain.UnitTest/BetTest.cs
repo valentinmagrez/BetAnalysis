@@ -53,10 +53,10 @@ namespace Bet.Domain.UnitTest
             Check.That(bets.State).IsEqualTo(expected);
         }
 
-        private static BetAggregates.Bet BuildBetItems(BetState[] states)
+        private static AggregatesModel.BetAggregates.Bet BuildBetItems(BetState[] states)
         {
             var items = states.Select(_ => new BetItem {State = _});
-            var bets = new BetAggregates.Bet {Items = items.ToList()};
+            var bets = new AggregatesModel.BetAggregates.Bet {Items = items.ToList()};
             return bets;
         }
     }

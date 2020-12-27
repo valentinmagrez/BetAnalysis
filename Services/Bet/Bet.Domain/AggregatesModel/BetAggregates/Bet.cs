@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Bet.Domain.Bet;
+using Bet.Domain.BetAggregates;
 using Bet.Domain.SeedWork;
 
-namespace Bet.Domain.BetAggregates
+namespace Bet.Domain.AggregatesModel.BetAggregates
 {
     public class Bet : Entity
     {
