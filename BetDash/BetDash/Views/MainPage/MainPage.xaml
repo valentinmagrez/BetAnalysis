@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.SfChart.XForms;assembly=Syncfusion.SfChart.XForms"
+             x:Class="BetDash.Views.MainPage.MainPage"
+             Title="{Binding Title}">
+    <StackLayout>
+        <chart:SfChart HeightRequest="400">
+            <chart:SfChart.Title>
+                <chart:ChartTitle Text="Gain" TextColor="Black"/>
+            </chart:SfChart.Title>
+            <chart:SfChart.PrimaryAxis>
+                <chart:CategoryAxis/>
+            </chart:SfChart.PrimaryAxis>
+            <chart:SfChart.SecondaryAxis>
+                <chart:NumericalAxis/>
+            </chart:SfChart.SecondaryAxis>
+            <chart:LineSeries EnableDataPointSelection="True" ItemsSource="{Binding BenefitsByDay}">
+                <chart:LineSeries.ColorModel>
+                    <chart:ChartColorModel CustomBrushes="{Binding ColorCollection}" Palette="Custom">
+                    </chart:ChartColorModel>
+                </chart:LineSeries.ColorModel>
+                <chart:LineSeries.DataMarker>
+                    <chart:ChartDataMarker ShowLabel="True">
+                        <chart:ChartDataMarker.LabelStyle>
+                            <chart:DataMarkerLabelStyle Margin="2" FontSize="10"/>
+                        </chart:ChartDataMarker.LabelStyle>
+                    </chart:ChartDataMarker>
+                </chart:LineSeries.DataMarker>
+            </chart:LineSeries>
+            <chart:SfChart.ChartBehaviors>
+                <chart:ChartZoomPanBehavior/>
+            </chart:SfChart.ChartBehaviors>
+        </chart:SfChart>
+    </StackLayout>
+</ContentPage>
