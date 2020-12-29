@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BetDash.Settings;
 using Prism.Commands;
 using Prism.Navigation;
 using UnibetClient;
@@ -58,6 +59,9 @@ namespace BetDash.Views.Login
             Title = "Login";
             _unibetClient = client;
             LoginCommand = new DelegateCommand(async ()=> await Login(), CanLogin);
+            Username = Identifiant.Username;
+            Password = Identifiant.Password;
+            BirthDate = Convert.ToDateTime(Identifiant.BirthDate);
         }
 
         private async Task Login()
@@ -67,7 +71,7 @@ namespace BetDash.Views.Login
             Connecting = false;
 
             if (success)
-                await NavigationService.NavigateAsync(nameof(MainPage));
+                await NavigationService.NavigateAsync(nameof(DashboardPage));
         }
 
         private bool CanLogin()

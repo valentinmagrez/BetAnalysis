@@ -1,6 +1,6 @@
 using BetDash.Settings;
+using BetDash.Views.DashboardPage;
 using BetDash.Views.Login;
-using BetDash.Views.MainPage;
 using Prism;
 using Prism.Ioc;
 using UnibetClient;
@@ -31,7 +31,7 @@ namespace BetDash
 
         private static void RegisterNavigation(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<DashboardPage, DashboardPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
         }
     }

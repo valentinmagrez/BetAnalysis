@@ -16,4 +16,10 @@
     <ProjectReference Include="..\..\Services\Unibet\UnibetClient\UnibetClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\DashboardPage\DashboardPage.xaml.cs">
+      <DependentUpon>DashboardPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

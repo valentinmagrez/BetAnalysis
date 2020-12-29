@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using BetDash.Settings;
 using Prism.Navigation;
 using Syncfusion.SfChart.XForms;
+using UnibetClient;
 using UnibetClient.DTO;
 using Xamarin.Forms;
 
-namespace BetDash.Views.MainPage
+namespace BetDash.Views.DashboardPage
 {
-    public class MainPageViewModel : ViewModelBase
+    public class DashboardPageViewModel : ViewModelBase
     {
-        private readonly UnibetClient.UnibetClient _unibetClient = new UnibetClient.UnibetClient();
-
+        private readonly IUnibetClient _unibetClient;
         private decimal? _amount;
 
         public decimal? Amount
@@ -26,15 +25,15 @@ namespace BetDash.Views.MainPage
 
         public ObservableCollection<ChartDataPoint> BenefitsByDay { get; set; } = new ObservableCollection<ChartDataPoint>();
 
-        public MainPageViewModel(INavigationService navigationService)
+        public DashboardPageViewModel(INavigationService navigationService, IUnibetClient client)
             : base(navigationService)
         {
             Title = "Main Page";
+            _unibetClient = client;
         }
 
         public override async void Initialize(INavigationParameters parameters)
         {
-            await _unibetClient.Login(Identifiant.Username, Identifiant.Password, Identifiant.BirthDate);
             var bets = await _unibetClient.GetBetsHistory(new DateTime(2020, 12, 1), new DateTime(2020, 12, 29));
             BuildChart(bets);
         }
