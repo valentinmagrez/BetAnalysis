@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:login="clr-namespace:BetDash.Views.Login;assembly=BetDash"
+             x:Class="BetDash.Views.Login.LoginPage"
+             x:DataType="login:LoginPageViewModel"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <Style TargetType="Frame" x:Key="InputStyle">
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="BackgroundColor" Value="White"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,10,0,10"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Frame CornerRadius="10"
+               BackgroundColor="WhiteSmoke"
+               HorizontalOptions="CenterAndExpand" 
+               VerticalOptions="CenterAndExpand"
+               HasShadow="True"
+               IsClippedToBounds="True"
+               Padding="0">
+            <FlexLayout WidthRequest="250"
+                        HeightRequest="400"
+                        Padding="5"
+                        Direction="Column">
+                <Label FontSize="18" Text="{Binding Title}" HorizontalTextAlignment="Center"/>
+                <Frame Style="{StaticResource InputStyle}">
+                    <Entry Text="{Binding Username}" HorizontalOptions="FillAndExpand"/>
+                </Frame>
+                <Frame Style="{StaticResource InputStyle}">
+                    <Entry Text="{Binding Password}" IsPassword="True"/>
+                </Frame>
+                <Frame Style="{StaticResource InputStyle}">
+                    <DatePicker Date="{Binding BirthDate}"/>
+                </Frame>
+                <Button Text="Valider" Command="{Binding LoginCommand}"/>
+                <ActivityIndicator IsRunning="{Binding Connecting}"></ActivityIndicator>
+            </FlexLayout>
+        </Frame>
+    </ContentPage.Content>
+</ContentPage>

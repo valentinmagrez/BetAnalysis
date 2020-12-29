@@ -1,7 +1,9 @@
 using BetDash.Settings;
+using BetDash.Views.Login;
 using BetDash.Views.MainPage;
 using Prism;
 using Prism.Ioc;
+using UnibetClient;
 
 namespace BetDash
 {
@@ -18,12 +20,19 @@ namespace BetDash
 
             InitializeComponent();
 
-            await NavigationService.NavigateAsync(nameof(MainPage));
+            await NavigationService.NavigateAsync(nameof(LoginPage));
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            RegisterNavigation(containerRegistry);
+            containerRegistry.RegisterInstance<IUnibetClient>(new UnibetClient.UnibetClient());
+        }
+
+        private static void RegisterNavigation(IContainerRegistry containerRegistry)
+        {
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
         }
     }
 }
