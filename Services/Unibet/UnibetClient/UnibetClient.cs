@@ -8,7 +8,7 @@ using UnibetClient.DTO;
 
 namespace UnibetClient
 {
-    public class UnibetClient
+    public class UnibetClient : IUnibetClient
     {
         private readonly HttpClient _client;
         private readonly Uri _baseUri = new Uri("https://www.unibet.fr");
@@ -19,20 +19,22 @@ namespace UnibetClient
             _client = new HttpClient(handler) {BaseAddress = _baseUri};
         }
         
-        public async Task Login(string username, string password, string birthDate)
+        public async Task<bool> Login(string username, string password, string birthDate)
         {
             const string uriSuffix = "/zones/loginbox/processLogin.json";
             var queryParams = $"username={username}&password={password}&dateOfBirth={birthDate}";
 
             var fullUri = $"{uriSuffix}?{queryParams}";
-            await Post(fullUri);
-            await CheckSession();
+            if (!await Post(fullUri))
+                return false;
+
+            return await CheckSession();
         }
 
-        private async Task CheckSession()
+        private async Task<bool> CheckSession()
         {
             const string uriSuffix = "/zones/checksession.json";
-            await Post(uriSuffix);
+            return await Post(uriSuffix);
         }
 
         public async Task<List<BetDto>> GetBetsHistory(DateTime dateFrom, DateTime dateTo)
@@ -78,9 +80,14 @@ namespace UnibetClient
             return await response.Content.ReadAsAsync<TDto>();
         }
 
-        private async Task Post(string uri)
+        private async Task<bool> Post(string uri)
         {
-            await _client.PostAsync(uri, null);
+            var response = await _client.PostAsync(uri, null);
+            if (response.IsSuccessStatusCode)
+                return true;
+
+            Console.WriteLine($"Error on request {uri}");
+            return false;
         }
     }
 }

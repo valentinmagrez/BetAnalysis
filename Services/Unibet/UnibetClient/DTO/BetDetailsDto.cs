@@ -23,6 +23,6 @@ namespace UnibetClient.DTO
         public string Sport { get; set; }
 
         [JsonProperty("isWinning")]
-        public string IsWinning { get; set; }
+        public bool? IsWinning { get; set; }
     }
 }

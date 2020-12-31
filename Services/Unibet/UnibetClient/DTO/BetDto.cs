@@ -33,5 +33,7 @@ namespace UnibetClient.DTO
         public bool IsFreeBet { get; set; }
 
         public bool IsFirstBet => BetNumber.Split('/')[0] == "1";
+
+        public decimal? Benefit => IsFreeBet? TotalReturn : TotalReturn - Stake;
     }
 }
