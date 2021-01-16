@@ -2,12 +2,22 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:chart="clr-namespace:Syncfusion.SfChart.XForms;assembly=Syncfusion.SfChart.XForms"
+             xmlns:prism="http://prismlibrary.com"
              xmlns:dashboardPage="clr-namespace:BetDash.Views.DashboardPage;assembly=BetDash"
+             xmlns:betItem="clr-namespace:BetDash.Views.DashboardPage.BetItem;assembly=BetDash"
+             xmlns:betDetails="clr-namespace:BetDash.Views.DashboardPage.BetDetails;assembly=BetDash"
              x:Class="BetDash.Views.DashboardPage.DashboardPage"
              x:DataType="dashboardPage:DashboardPageViewModel"
              Title="{Binding Title}">
     <StackLayout>
         <chart:SfChart HeightRequest="400">
+            <chart:SfChart.Behaviors>
+                <prism:EventToCommandBehavior 
+                    EventName="SelectionChanged" 
+                    Command="{Binding SelectBetsCommand}"
+                    EventArgsParameterPath="SelectedDataPointIndex"
+                    />
+            </chart:SfChart.Behaviors>
             <chart:SfChart.Title>
                 <chart:ChartTitle Text="Gain" TextColor="Black"/>
             </chart:SfChart.Title>
@@ -17,7 +27,8 @@
             <chart:SfChart.SecondaryAxis>
                 <chart:NumericalAxis/>
             </chart:SfChart.SecondaryAxis>
-            <chart:LineSeries EnableDataPointSelection="True" ItemsSource="{Binding BenefitsByDay}">
+            <chart:LineSeries EnableDataPointSelection="True" 
+                              ItemsSource="{Binding ChartsValue}">
                 <chart:LineSeries.ColorModel>
                     <chart:ChartColorModel CustomBrushes="{Binding ColorCollection}" Palette="Custom">
                     </chart:ChartColorModel>
@@ -34,5 +45,46 @@
                 <chart:ChartZoomPanBehavior/>
             </chart:SfChart.ChartBehaviors>
         </chart:SfChart>
+        <ScrollView>
+            <StackLayout BindableLayout.ItemsSource="{Binding SelectedBets.Bets}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Margin="3" Padding="5" BackgroundColor="White">
+                            <StackLayout x:DataType="betItem:BetItemViewModel" BindableLayout.ItemsSource="{Binding BetDetails}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="betDetails:BetDetailsViewModel">
+                                        <!--<DataTrigger TargetType="Frame" Binding="{Binding Path=IsWinning}" Value="True">
+                                                    <Setter Property="BorderColor" Value="Green"/>
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Frame" Binding="{Binding Path=IsWinning}" Value="False">
+                                                    <Setter Property="BorderColor" Value="Red"/>
+                                                </DataTrigger>-->
+                                        <StackLayout>
+                                            <Label Text="{Binding EventName}"/>
+                                            <Label Text="{Binding Name}"/>
+                                            <Label Text="{Binding Selection}"/>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </StackLayout>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Label Text="Mise total:" Grid.Column="0"></Label>
+                                <Label Text="Gain:"  Grid.Column="2"></Label>
+                            </Grid>
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate >
+            </StackLayout>
+        </ScrollView>
     </StackLayout>
 </ContentPage>
