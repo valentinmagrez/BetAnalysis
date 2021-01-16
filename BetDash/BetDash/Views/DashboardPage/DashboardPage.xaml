@@ -6,6 +6,7 @@
              xmlns:dashboardPage="clr-namespace:BetDash.Views.DashboardPage;assembly=BetDash"
              xmlns:betItem="clr-namespace:BetDash.Views.DashboardPage.BetItem;assembly=BetDash"
              xmlns:betDetails="clr-namespace:BetDash.Views.DashboardPage.BetDetails;assembly=BetDash"
+             xmlns:fontawesome="clr-namespace:BetDash.Utils;assembly=BetDash"
              x:Class="BetDash.Views.DashboardPage.DashboardPage"
              x:DataType="dashboardPage:DashboardPageViewModel"
              Title="{Binding Title}">
@@ -59,11 +60,26 @@
                                                 <DataTrigger TargetType="Frame" Binding="{Binding Path=IsWinning}" Value="False">
                                                     <Setter Property="BorderColor" Value="Red"/>
                                                 </DataTrigger>-->
-                                        <StackLayout>
-                                            <Label Text="{Binding EventName}"/>
-                                            <Label Text="{Binding Name}"/>
-                                            <Label Text="{Binding Selection}"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <StackLayout>
+                                                <Label Text="{Binding EventName}"/>
+                                                <Label Text="{Binding Name}"/>
+                                                <Label Text="{Binding Selection}"/>
+                                            </StackLayout>
+                                            <Label FontFamily="{StaticResource FontAwesomeSolid}">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsWinning}" Value="true">
+                                                        <Setter Property="Text" Value="{x:Static fontawesome:FontAwesomeIcons.CheckCircle}"/>
+                                                        <Setter Property="TextColor" Value="ForestGreen"/>
+                                                    </DataTrigger>                                                    
+                                                    <DataTrigger TargetType="Label" Binding="{Binding IsWinning}" Value="false">
+                                                        <Setter Property="Text" Value="{x:Static fontawesome:FontAwesomeIcons.TimesCircle}"/>
+                                                        <Setter Property="TextColor" Value="Red"/>
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                         </StackLayout>
+
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </StackLayout>

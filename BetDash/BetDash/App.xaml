@@ -4,8 +4,31 @@
              xmlns:prism="http://prismlibrary.com"
              x:Class="BetDash.App">
   <Application.Resources>
+      <ResourceDictionary>
+          <OnPlatform x:TypeArguments="x:String" 
+                      x:Key="FontAwesomeBrands">
+              <On Platform="Android" 
+                  Value="FontAwesome5Brands-Regular-400.otf#Regular" />
+                <On Platform="iOS" 
+                  Value="FontAwesome5Brands-Regular-400" />
+            </OnPlatform>
 
-    <!-- Application resource dictionary -->
+          <OnPlatform x:TypeArguments="x:String" 
+                      x:Key="FontAwesomeSolid">
+              <On Platform="Android" 
+                  Value="FontAwesome5Free-Solid-900.otf#Regular" />
+                <On Platform="iOS" 
+                  Value="FontAwesome5Free-Solid-900" />
+            </OnPlatform>
 
-  </Application.Resources>
+          <OnPlatform x:TypeArguments="x:String" 
+                      x:Key="FontAwesomeRegular">
+              <On Platform="Android" 
+                  Value="FontAwesome5Free-Regular-400.otf#Regular" />
+                <On Platform="iOS" 
+                  Value="FontAwesome5Free-Regular-400" />
+            </OnPlatform>
+      </ResourceDictionary>
+
+    </Application.Resources>
 </prism:PrismApplication>

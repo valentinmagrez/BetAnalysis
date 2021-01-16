@@ -36,5 +36,11 @@
     <string>1.0</string>
     <key>CFBundleShortVersionString</key>
     <string>1</string>
+    <key>UIAppFonts</key>
+    <array>
+      <string>FontAwesome5Brands-Regular-400.otf</string>
+      <string>FontAwesome5Free-Regular-400.otf</string>
+      <string>FontAwesome5Free-Solid-900.otf</string>
+    </array>
   </dict>
 </plist>
